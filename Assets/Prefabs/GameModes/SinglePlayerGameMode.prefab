@@ -414,5 +414,7 @@ MonoBehaviour:
     Name: HitTopBound
   _hitBottomBoundSignal:
     Name: HitBottomBound
-  _cameraColorChangeSignal:
-    Name: CameraColorChange
+  _scoreChangeSignal:
+    Name: ScoreChange
+  _racketsSizeChangeSignal:
+    Name: RacketsSizeChange

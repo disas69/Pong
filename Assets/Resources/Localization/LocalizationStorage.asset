@@ -11,7 +11,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e31777f2d847c45e68a891765d7c6b5d, type: 3}
   m_Name: LocalizationStorage
   m_EditorClassIdentifier: 
-  Keys: []
+  Keys:
+  - best_score
+  - tap_message
+  - hold_message
+  - replay_message
+  - game_over
+  - title
   LanguagesData:
   - Language: 10
-    Strings: []
+    Strings:
+    - 'B E S T   S C O R E  :  {0}'
+    - t a p   t o   p l a y
+    - h o l d   t o   p l a y   o n l i n e
+    - t a p   t o   r e p l a y
+    - G A M E   O V E R
+    - P  O  N  G
+  - Language: 30
+    Strings:
+    - "\u041B \u0423 \u0427 \u0428 \u0418 \u0419   \u0421 \u0427 \u0415 \u0422  :
+      \ {0}"
+    - "\u043A \u043E \u0441 \u043D \u0438 \u0442 \u0435 \u0441 \u044C   \u0447 \u0442
+      \u043E \u0431 \u044B   \u0438 \u0433 \u0440 \u0430 \u0442 \u044C"
+    - "\u0443 \u0434 \u0435 \u0440 \u0436 \u0438 \u0432 \u0430 \u0439 \u0442 \u0435
+      \  \u0447 \u0442 \u043E \u0431 \u044B   \u0438 \u0433 \u0440 \u0430 \u0442 \u044C
+      \  \u043E \u043D \u043B \u0430 \u0439 \u043D"
+    - "\u043A \u043E \u0441 \u043D \u0438 \u0442 \u0435 \u0441 \u044C   \u0447 \u0442
+      \u043E \u0431 \u044B   \u0438 \u0433 \u0440 \u0430 \u0442 \u044C   \u0441 \u043D
+      \u043E \u0432 \u0430"
+    - "\u0418 \u0413 \u0420 \u0410   \u041E \u041A \u041E \u041D \u0427 \u0415 \u041D
+      \u0410"
+    - "\u041F  \u041E  \u041D  \u0413"

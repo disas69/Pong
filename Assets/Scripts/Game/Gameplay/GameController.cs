@@ -4,6 +4,7 @@ using Framework.Tools.Gameplay;
 using Framework.Tools.Singleton;
 using Framework.UI;
 using Game.Configuration;
+using Game.Data;
 using Game.Gameplay.GameModes;
 using Game.Input;
 using Game.UI;
@@ -33,9 +34,10 @@ namespace Game.Gameplay
         private StateMachine<GameState> _gameStateMachine;
         private GameMode _currentGameMode;
 
-        [SerializeField] private List<GameModeSet> _gameModeSets;
         [SerializeField] private NavigationProvider _navigationProvider;
         [SerializeField] private BallsStorage _ballsStorage;
+
+        [HideInInspector] public List<GameModeSet> GameModeSets;
 
         public GameModeType GameMode
         {
@@ -48,8 +50,9 @@ namespace Game.Gameplay
 
             _playerInputHandler = GetComponent<PlayerInputHandler>();
             _gameStateMachine = CreateStateMachine();
+            _navigationProvider.OpenScreen<StartPage>();
 
-            ActivateIdle();
+            GameData.Load();
         }
 
         private StateMachine<GameState> CreateStateMachine()
@@ -72,12 +75,14 @@ namespace Game.Gameplay
 
         public void Replay()
         {
-            _gameStateMachine.SetState(GameState.SinglePlay);
-        }
-
-        private void ActivateIdle()
-        {
-            _navigationProvider.OpenScreen<StartPage>();
+            if (GameMode == GameModeType.SinglePlayer)
+            {
+                SetGameState(GameState.SinglePlay);
+            }
+            else if (GameMode == GameModeType.MultiPlayer)
+            {
+                SetGameState(GameState.MultiPlay);
+            }
         }
 
         private void ActivateSinglePlay()
@@ -103,23 +108,13 @@ namespace Game.Gameplay
             {
                 if (_currentGameMode.Type != type)
                 {
-                    _currentGameMode.Deactivate();
                     Destroy(_currentGameMode.gameObject);
-
-                    var gameMode = GetGameMode(type);
-                    if (gameMode != null)
-                    {
-                        _currentGameMode = Instantiate(gameMode, transform);
-                    }
+                    _currentGameMode = GetGameMode(type);
                 }
             }
             else
             {
-                var gameMode = GetGameMode(type);
-                if (gameMode != null)
-                {
-                    _currentGameMode = Instantiate(gameMode, transform);
-                }
+                _currentGameMode = GetGameMode(type);
             }
 
             _currentGameMode.Initialize(_ballsStorage.GetNextBall());
@@ -128,14 +123,19 @@ namespace Game.Gameplay
 
         private GameMode GetGameMode(GameModeType type)
         {
-            var gameModeSet = _gameModeSets.Find(g => g.Type == type);
-            if (gameModeSet != null)
+            var gameModeSet = GameModeSets.Find(g => g.Type == type);
+            if (gameModeSet != null && gameModeSet.GameMode != null)
             {
-                return gameModeSet.GameMode;
+                return Instantiate(gameModeSet.GameMode, transform);
             }
 
             Debug.LogError(string.Format("Failed to find appropriate game mode: {0}", type));
             return null;
+        }
+
+        private void OnDestroy()
+        {
+            GameData.Save();
         }
     }
 }

@@ -2,7 +2,9 @@
 using Framework.Extensions;
 using Framework.UI.Structure.Base.Model;
 using Framework.UI.Structure.Base.View;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.UI
 {
@@ -10,8 +12,15 @@ namespace Game.UI
     {
         private Coroutine _overlayTransitionCoroutine;
 
+        [SerializeField] private Text _scoreText;
         [SerializeField] private float _overlayTransitionSpeed;
         [SerializeField] private CanvasGroup _overlay;
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            _scoreText.gameObject.SetActive(false);
+        }
 
         protected override IEnumerator InTransition()
         {
@@ -33,6 +42,14 @@ namespace Game.UI
             _overlay.alpha = 0f;
             _overlay.gameObject.SetActive(false);
             _overlayTransitionCoroutine = null;
+        }
+
+        [UsedImplicitly]
+        public void OnScoreChanged(int score)
+        {
+            _scoreText.gameObject.SetActive(false);
+            _scoreText.text = score.ToString();
+            _scoreText.gameObject.SetActive(true);
         }
 
         public override void OnExit()

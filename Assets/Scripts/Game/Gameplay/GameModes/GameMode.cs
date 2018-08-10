@@ -1,5 +1,6 @@
 ﻿using Framework.Extensions;
 using Game.Configuration;
+using Game.Gameplay.Objects;
 using Game.Input;
 using UnityEngine;
 
@@ -32,6 +33,8 @@ namespace Game.Gameplay.GameModes
             get { return _bottomRacket; }
         }
 
+        public abstract IControllableObject[] GetControllableObjects();
+
         protected virtual void Awake()
         {
             _defaultTopRacketPosition = TopRacket.transform.position;
@@ -40,7 +43,6 @@ namespace Game.Gameplay.GameModes
 
         protected virtual void OnEnable()
         {
-            
         }
 
         public virtual void Initialize(Ball ball)
@@ -49,20 +51,12 @@ namespace Game.Gameplay.GameModes
             SetupRackets();
         }
 
-        public abstract IControllableObject[] GetControllableObjects();
-
         protected virtual void Update()
         {
         }
 
-        public virtual void Deactivate()
-        {
-
-        }
-
         protected virtual void OnDisable()
         {
-            
         }
 
         private void SetupBall(Ball ball)
@@ -73,8 +67,8 @@ namespace Game.Gameplay.GameModes
                 Destroy(_ballRoot.GetChild(i).gameObject);
             }
 
-            var newBall = Instantiate(ball, _ballRoot);
-            this.WaitForSeconds(GameConfiguration.Instance.BallKickOffDelay, () => newBall.KickOff());
+            var ballInstance = Instantiate(ball, _ballRoot);
+            this.WaitForSeconds(GameConfiguration.Instance.BallKickOffDelay, () => ballInstance.KickOff());
         }
 
         private void SetupRackets()
@@ -83,10 +77,12 @@ namespace Game.Gameplay.GameModes
             BottomRacket.transform.position = _defaultBottomRacketPosition;
 
             var topRacketSize = TopRacket.Box.transform.localScale;
-            TopRacket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize, topRacketSize.y, topRacketSize.z);
+            TopRacket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize, topRacketSize.y,
+                topRacketSize.z);
 
             var bottomRacketSize = BottomRacket.Box.transform.localScale;
-            BottomRacket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize, bottomRacketSize.y, bottomRacketSize.z);
+            BottomRacket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize,
+                bottomRacketSize.y, bottomRacketSize.z);
         }
     }
 }

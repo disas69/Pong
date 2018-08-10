@@ -16,4 +16,5 @@ MonoBehaviour:
   - HitTopBound
   - HitBottomBound
   - HitRacket
-  - CameraColorChange
+  - RacketsSizeChange
+  - ScoreChange

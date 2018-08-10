@@ -3,7 +3,7 @@ using Framework.Extensions;
 using Framework.Tools.Gameplay;
 using UnityEngine;
 
-namespace Game.Audio
+namespace Framework.Audio
 {
     public class AudioPlayer : MonoBehaviour
     {

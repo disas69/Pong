@@ -347,8 +347,8 @@ GameObject:
   - component: {fileID: 608012025}
   - component: {fileID: 608012026}
   - component: {fileID: 608012031}
-  - component: {fileID: 608012029}
   - component: {fileID: 608012030}
+  - component: {fileID: 608012029}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -448,7 +448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Signal:
-    Name: CameraColorChange
+    Name: RacketsSizeChange
   Action:
     m_PersistentCalls:
       m_Calls:
@@ -736,7 +736,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _localizationStorageAsset: {fileID: 11400000, guid: a254a6d436d6fe1448353d4d8fbfcdb5,
     type: 2}
-  _useSystemLanguage: 0
+  _useSystemLanguage: 1
   _language: 10
 --- !u!114 &1043360160
 MonoBehaviour:
@@ -749,15 +749,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e3aed8102b9c246be2bcefe47c6644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameModeSets:
+  _navigationProvider: {fileID: 1479906809}
+  _ballsStorage: {fileID: 11400000, guid: 84579dc42ce4f4f48a8b09054d3f1236, type: 2}
+  GameModeSets:
   - Type: 0
     GameMode: {fileID: 114903126725994364, guid: 549d960c640eba44589de625332b65da,
       type: 2}
   - Type: 1
     GameMode: {fileID: 114791672921256672, guid: d23025d466b1f8e4e9ebdc776730a23b,
       type: 2}
-  _navigationProvider: {fileID: 1479906809}
-  _ballsStorage: {fileID: 11400000, guid: 84579dc42ce4f4f48a8b09054d3f1236, type: 2}
 --- !u!114 &1043360161
 MonoBehaviour:
   m_ObjectHideFlags: 0

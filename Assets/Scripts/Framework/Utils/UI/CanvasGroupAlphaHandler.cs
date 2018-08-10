@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Framework.Utils.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class CanvasGroupAlphaHandler : MonoBehaviour
     {
         private CanvasGroup _canvasGroup;
@@ -10,6 +11,7 @@ namespace Framework.Utils.UI
 
         [SerializeField] private float _targetAlphaValue;
         [SerializeField] private float _changeSpeed;
+        [SerializeField] private bool _disableOnFinish;
 
         private void Awake()
         {
@@ -19,8 +21,12 @@ namespace Framework.Utils.UI
 
         private void OnEnable()
         {
-            _canvasGroup.alpha = _initialAlphaValue;
             StartCoroutine(ChangeAlpha());
+        }
+
+        private void OnDisable()
+        {
+            _canvasGroup.alpha = _initialAlphaValue;
         }
 
         private IEnumerator ChangeAlpha()
@@ -43,6 +49,11 @@ namespace Framework.Utils.UI
             }
 
             _canvasGroup.alpha = _targetAlphaValue;
+
+            if (_disableOnFinish)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

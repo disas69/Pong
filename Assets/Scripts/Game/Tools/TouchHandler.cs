@@ -16,7 +16,7 @@ namespace Game.Tools
 
         private void Awake()
         {
-            _tapDetector = new TapDetector(0.25f, 0.5f);
+            _tapDetector = new TapDetector(0.5f, 1f);
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -26,11 +26,12 @@ namespace Game.Tools
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (_tapDetector.RegisterTouchUp(eventData))
+            var result = _tapDetector.RegisterTouchUp(eventData);
+            if (result == TouchResult.Tap)
             {
                 _onTapEvent.Invoke();
             }
-            else
+            else if (result == TouchResult.Hold)
             {
                 _onHoldEvent.Invoke();
             }

@@ -1,7 +1,7 @@
 ﻿using Game.Input;
 using UnityEngine;
 
-namespace Game.Gameplay
+namespace Game.Gameplay.Objects
 {
     public enum RacketType
     {

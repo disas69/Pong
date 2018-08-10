@@ -3,7 +3,7 @@ using Framework.Signals;
 using Framework.Tools.Gameplay;
 using UnityEngine;
 
-namespace Game.Gameplay
+namespace Game.Gameplay.Objects
 {
     [RequireComponent(typeof(Rigidbody))]
     public class Ball : MonoBehaviour

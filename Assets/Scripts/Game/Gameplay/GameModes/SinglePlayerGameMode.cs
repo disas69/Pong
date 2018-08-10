@@ -1,5 +1,7 @@
 ﻿using Framework.Signals;
 using Game.Configuration;
+using Game.Data;
+using Game.Gameplay.Objects;
 using Game.Input;
 using UnityEngine;
 
@@ -12,7 +14,8 @@ namespace Game.Gameplay.GameModes
         [SerializeField] private Signal _hitRacketSignal;
         [SerializeField] private Signal _hitTopBoundSignal;
         [SerializeField] private Signal _hitBottomBoundSignal;
-        [SerializeField] private Signal _cameraColorChangeSignal;
+        [SerializeField] private Signal _scoreChangeSignal;
+        [SerializeField] private Signal _racketsSizeChangeSignal;
 
         public override GameModeType Type
         {
@@ -24,12 +27,6 @@ namespace Game.Gameplay.GameModes
             return new IControllableObject[] {TopRacket, BottomRacket};
         }
 
-        public override void Initialize(Ball ball)
-        {
-            base.Initialize(ball);
-            _hitsCount = 0;
-        }
-
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -38,24 +35,38 @@ namespace Game.Gameplay.GameModes
             SignalsManager.Register(_hitBottomBoundSignal.Name, OnHitBoundsAction);
         }
 
+        public override void Initialize(Ball ball)
+        {
+            base.Initialize(ball);
+            _hitsCount = 0;
+        }
+
         private void OnHitRacketAction()
         {
             _hitsCount++;
+            SignalsManager.Broadcast(_scoreChangeSignal.Name, _hitsCount);
+
             if (_hitsCount % GameConfiguration.Instance.RacketSizeDecreaseRate == 0)
             {
                 DecreaseRacketSize(TopRacket);
                 DecreaseRacketSize(BottomRacket);
 
-                SignalsManager.Broadcast(_cameraColorChangeSignal.Name);
+                SignalsManager.Broadcast(_racketsSizeChangeSignal.Name);
             }
         }
 
         private void OnHitBoundsAction()
         {
+            if (_hitsCount > GameData.Data.BestScore)
+            {
+                GameData.Data.BestScore = _hitsCount;
+                GameData.Save();
+            }
+
             GameController.Instance.SetGameState(GameState.GameOver);
         }
 
-        private void DecreaseRacketSize(Racket racket)
+        private static void DecreaseRacketSize(Racket racket)
         {
             var racketSize = racket.Box.transform.localScale;
             var racketSizeX = Mathf.Clamp(racketSize.x - GameConfiguration.Instance.RacketSizeDecreaseValue,

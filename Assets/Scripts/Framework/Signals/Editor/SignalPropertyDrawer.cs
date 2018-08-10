@@ -15,7 +15,7 @@ namespace Framework.Signals.Editor
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
             var rect = new Rect(position.x, position.y, position.width, position.height);
-            var signalsStorage = (SignalsStorage)AssetDatabase.LoadAssetAtPath(SignalsStorage.AssetPath + "SignalsStorage.asset", typeof(SignalsStorage));
+            var signalsStorage = (SignalsStorage) AssetDatabase.LoadAssetAtPath(SignalsStorage.AssetPath + "SignalsStorage.asset", typeof(SignalsStorage));
             if (signalsStorage != null)
             {
                 if (signalsStorage.Signals.Count > 0)

@@ -3,6 +3,13 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Input
 {
+    public enum TouchResult
+    {
+        Tap,
+        Swipe,
+        Hold
+    }
+
     public class TapDetector
     {
         private readonly float _distanceLimit;
@@ -23,7 +30,7 @@ namespace Framework.Input
             _touchDownPosition = eventData.position;
         }
 
-        public bool RegisterTouchUp(PointerEventData eventData)
+        public TouchResult RegisterTouchUp(PointerEventData eventData)
         {
             if (Time.time - _touchDownTime < _timeLimit)
             {
@@ -31,11 +38,13 @@ namespace Framework.Input
                 var deltaInInches = distance / Screen.dpi;
                 if (deltaInInches < _distanceLimit)
                 {
-                    return true;
+                    return TouchResult.Tap;
                 }
+
+                return TouchResult.Swipe;
             }
 
-            return false;
+            return TouchResult.Hold;
         }
     }
 }

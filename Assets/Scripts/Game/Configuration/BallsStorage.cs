@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.Gameplay;
+using Game.Gameplay.Objects;
 using UnityEngine;
 
 namespace Game.Configuration
