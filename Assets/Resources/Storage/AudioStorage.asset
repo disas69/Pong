@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c521c5de0aaf405895541faf255dd5ae, type: 3}
+  m_Name: AudioStorage
+  m_EditorClassIdentifier: 
+  AudioClips:
+  - Key: ball_hit
+    AudioClip: {fileID: 8300000, guid: 2501695d5a147cf488a0a1ed09b0b4d3, type: 3}
+  - Key: ball_destroy
+    AudioClip: {fileID: 8300000, guid: 725e25e7024499342addc7ee3ab4c1e1, type: 3}
