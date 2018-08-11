@@ -110,13 +110,16 @@ namespace Game.Input
                 for (int i = 0; i < _controllableObjects.Length; i++)
                 {
                     var controllableObject = _controllableObjects[i];
-                    var leftBoundsX = bounds.center.x - bounds.extents.x + controllableObject.Box.transform.localScale.x / 2f;
-                    var rightBoundsX = bounds.center.x + bounds.extents.x - controllableObject.Box.transform.localScale.x / 2f;
-                    var oldYPosition = controllableObject.Position.y;
-                    var newPosition = controllableObject.Position + worldspaceDelta;
-                    newPosition.x = Mathf.Clamp(newPosition.x, leftBoundsX, rightBoundsX);
-                    newPosition.y = oldYPosition;
-                    controllableObject.Position = newPosition;
+                    if (controllableObject != null && controllableObject.Box != null)
+                    {
+                        var leftBoundsX = bounds.center.x - bounds.extents.x + controllableObject.Box.transform.localScale.x / 2f;
+                        var rightBoundsX = bounds.center.x + bounds.extents.x - controllableObject.Box.transform.localScale.x / 2f;
+                        var oldYPosition = controllableObject.Position.y;
+                        var newPosition = controllableObject.Position + worldspaceDelta;
+                        newPosition.x = Mathf.Clamp(newPosition.x, leftBoundsX, rightBoundsX);
+                        newPosition.y = oldYPosition;
+                        controllableObject.Position = newPosition;
+                    }
                 }
             }
         }

@@ -1,9 +1,10 @@
 ﻿using Framework.UI.Structure.Base.Model;
 using Framework.UI.Structure.Base.View;
 using Game.Gameplay;
+using Game.UI.Popups;
 using JetBrains.Annotations;
 
-namespace Game.UI
+namespace Game.UI.Pages
 {
     public class StartPage : Page<PageModel>
     {
@@ -11,6 +12,12 @@ namespace Game.UI
         public void StartSinglePlay()
         {
             GameController.Instance.SetGameState(GameState.SinglePlay);
+        }
+
+        [UsedImplicitly]
+        public void OpenMultiPlayerStartPopup()
+        {
+            GameController.Instance.NavigationProvider.ShowPopup<MultiPlayerStartPopup>();
         }
     }
 }

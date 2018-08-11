@@ -5,6 +5,7 @@ namespace Framework.Input
 {
     public enum TouchResult
     {
+        None,
         Tap,
         Swipe,
         Hold
@@ -15,6 +16,7 @@ namespace Framework.Input
         private readonly float _distanceLimit;
         private readonly float _timeLimit;
 
+        private bool _isActive;
         private float _touchDownTime;
         private Vector3 _touchDownPosition;
 
@@ -26,25 +28,45 @@ namespace Framework.Input
 
         public void RegisterTouchDown(PointerEventData eventData)
         {
+            _isActive = true;
             _touchDownTime = Time.time;
             _touchDownPosition = eventData.position;
         }
 
-        public TouchResult RegisterTouchUp(PointerEventData eventData)
+        public TouchResult Update()
         {
-            if (Time.time - _touchDownTime < _timeLimit)
+            if (_isActive)
             {
-                var distance = Vector2.Distance(_touchDownPosition, eventData.position);
-                var deltaInInches = distance / Screen.dpi;
-                if (deltaInInches < _distanceLimit)
+                if (Time.time - _touchDownTime > _timeLimit)
                 {
-                    return TouchResult.Tap;
+                    _isActive = false;
+                    return TouchResult.Hold;
                 }
-
-                return TouchResult.Swipe;
             }
 
-            return TouchResult.Hold;
+            return TouchResult.None;
+        }
+
+        public TouchResult RegisterTouchUp(PointerEventData eventData)
+        {
+            if (_isActive)
+            {
+                if (Time.time - _touchDownTime < _timeLimit)
+                {
+                    var distance = Vector2.Distance(_touchDownPosition, eventData.position);
+                    var deltaInInches = distance / Screen.dpi;
+                    if (deltaInInches < _distanceLimit)
+                    {
+                        _isActive = false;
+                        return TouchResult.Tap;
+                    }
+
+                    _isActive = false;
+                    return TouchResult.Swipe;
+                }
+            }
+
+            return TouchResult.None;
         }
     }
 }

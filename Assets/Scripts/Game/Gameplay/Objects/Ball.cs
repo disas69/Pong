@@ -1,6 +1,7 @@
 ﻿using Framework.Extensions;
 using Framework.Signals;
 using Framework.Tools.Gameplay;
+using Game.Configuration;
 using UnityEngine;
 
 namespace Game.Gameplay.Objects
@@ -14,13 +15,12 @@ namespace Game.Gameplay.Objects
         };
 
         private Rigidbody _rigidbody;
+        private BallView _ballView;
         private Pool<ParticleSystem> _effectsPool;
+        private float _startSpeed;
+        private float _bouncingSpeed;
 
-        [SerializeField] private float _startSpeed;
-        [SerializeField] private float _bouncingSpeed;
         [SerializeField] private int _effectsPoolCapacity;
-        [SerializeField] private ParticleSystem _hitEffect;
-        [SerializeField] private ParticleSystem _destroyEffect;
         [SerializeField] private Signal _playAudioSignal;
         [SerializeField] private Signal _hitRacketSignal;
         [SerializeField] private Signal _hitTopBoundSignal;
@@ -29,7 +29,16 @@ namespace Game.Gameplay.Objects
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
-            _effectsPool = new Pool<ParticleSystem>(_hitEffect, transform.parent, _effectsPoolCapacity);
+        }
+
+        public void Setup(BallSettings ballSettings)
+        {
+            _startSpeed = ballSettings.StartSpeed;
+            _bouncingSpeed = ballSettings.BouncingSpeed;
+            _ballView = Instantiate(ballSettings.View, transform);
+            _effectsPool = new Pool<ParticleSystem>(_ballView.HitEffect, transform.parent, _effectsPoolCapacity);
+
+            transform.localScale = ballSettings.Size;
         }
 
         public void KickOff()
@@ -44,14 +53,15 @@ namespace Game.Gameplay.Objects
             var racket = otherCollision.gameObject.GetComponentInParent<Racket>();
             if (racket != null)
             {
-                var hitFactor = CalculateHitFactor(transform.position, otherCollision.transform.position, otherCollision.collider.bounds.size.x);
+                var hitFactor = CalculateHitFactor(transform.position, otherCollision.transform.position,
+                    otherCollision.collider.bounds.size.x);
                 racket.React(hitFactor);
 
-                if (racket.RacketType == RacketType.Top)
+                if (racket.Type == RacketType.Top)
                 {
                     _rigidbody.velocity = new Vector2(hitFactor, -1).normalized * _bouncingSpeed;
                 }
-                else if (racket.RacketType == RacketType.Bottom)
+                else if (racket.Type == RacketType.Bottom)
                 {
                     _rigidbody.velocity = new Vector2(hitFactor, 1).normalized * _bouncingSpeed;
                 }
@@ -108,7 +118,7 @@ namespace Game.Gameplay.Objects
 
         private void PlayDestroyEffect(Vector3 hitPoint)
         {
-            Instantiate(_destroyEffect, hitPoint, Quaternion.identity, transform.parent);
+            Instantiate(_ballView.DestroyEffect, hitPoint, Quaternion.identity, transform.parent);
             SignalsManager.Broadcast(_playAudioSignal.Name, "ball_destroy");
         }
 

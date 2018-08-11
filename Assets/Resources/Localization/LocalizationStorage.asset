@@ -18,6 +18,11 @@ MonoBehaviour:
   - replay_message
   - game_over
   - title
+  - create_game
+  - join_game
+  - back
+  - online
+  - mode
   LanguagesData:
   - Language: 10
     Strings:
@@ -27,6 +32,11 @@ MonoBehaviour:
     - t a p   t o   r e p l a y
     - G A M E   O V E R
     - P  O  N  G
+    - c r e a t e
+    - j o i n
+    - b a c k
+    - O N L I N E
+    - m o d e
   - Language: 30
     Strings:
     - "\u041B \u0423 \u0427 \u0428 \u0418 \u0419   \u0421 \u0427 \u0415 \u0422  :
@@ -42,3 +52,8 @@ MonoBehaviour:
     - "\u0418 \u0413 \u0420 \u0410   \u041E \u041A \u041E \u041D \u0427 \u0415 \u041D
       \u0410"
     - "\u041F  \u041E  \u041D  \u0413"
+    - "\u0441 \u043E \u0437 \u0434 \u0430 \u0442 \u044C"
+    - "\u0432 \u043E \u0439 \u0442 \u0438"
+    - "\u043D \u0430 \u0437 \u0430 \u0434"
+    - "\u041E \u041D \u041B \u0410 \u0419 \u041D"
+    - "\u0440 \u0435 \u0436 \u0438 \u043C"

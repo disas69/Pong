@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Framework.Extensions;
 using Framework.Tools.Gameplay;
 using Framework.Tools.Singleton;
 using Framework.UI;
@@ -7,7 +8,7 @@ using Game.Configuration;
 using Game.Data;
 using Game.Gameplay.GameModes;
 using Game.Input;
-using Game.UI;
+using Game.UI.Pages;
 using UnityEngine;
 
 namespace Game.Gameplay
@@ -35,7 +36,7 @@ namespace Game.Gameplay
         private GameMode _currentGameMode;
 
         [SerializeField] private NavigationProvider _navigationProvider;
-        [SerializeField] private BallsStorage _ballsStorage;
+        [SerializeField] private BallSettingsStorage _ballSettingsStorage;
 
         [HideInInspector] public List<GameModeSet> GameModeSets;
 
@@ -44,13 +45,18 @@ namespace Game.Gameplay
             get { return _currentGameMode.Type; }
         }
 
+        public NavigationProvider NavigationProvider
+        {
+            get { return _navigationProvider; }
+        }
+
         protected override void Awake()
         {
             base.Awake();
 
             _playerInputHandler = GetComponent<PlayerInputHandler>();
             _gameStateMachine = CreateStateMachine();
-            _navigationProvider.OpenScreen<StartPage>();
+            NavigationProvider.OpenScreen<StartPage>();
 
             GameData.Load();
         }
@@ -97,12 +103,12 @@ namespace Game.Gameplay
 
         private void ActivateGameOver()
         {
-            _navigationProvider.OpenScreen<ReplayPage>();
+            NavigationProvider.OpenScreen<ReplayPage>();
         }
 
         private void ActivateGameMode(GameModeType type)
         {
-            _navigationProvider.OpenScreen<PlayPage>();
+            NavigationProvider.OpenScreen<PlayPage>();
 
             if (_currentGameMode != null)
             {
@@ -117,8 +123,20 @@ namespace Game.Gameplay
                 _currentGameMode = GetGameMode(type);
             }
 
-            _currentGameMode.Initialize(_ballsStorage.GetNextBall());
-            _playerInputHandler.Initialize(_currentGameMode.GetControllableObjects());
+            _currentGameMode.Initialize(_ballSettingsStorage.GetNextBallSettings());
+
+            var controllableObjects = _currentGameMode.GetControllableObjects();
+            if (controllableObjects == null)
+            {
+                this.WaitUntil(() => (controllableObjects = _currentGameMode.GetControllableObjects()) != null, () =>
+                {
+                    _playerInputHandler.Initialize(controllableObjects);
+                });
+            }
+            else
+            {
+                _playerInputHandler.Initialize(controllableObjects);
+            }
         }
 
         private GameMode GetGameMode(GameModeType type)

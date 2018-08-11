@@ -18,4 +18,5 @@ MonoBehaviour:
     IsCached: 1
   - Screen: {fileID: 114606149223233608, guid: 8ac4b291679bd97419c110a1351363e6, type: 2}
     IsCached: 1
-  PopupSettings: []
+  PopupSettings:
+  - Popup: {fileID: 114741610088623994, guid: 9e099f266bc72cc45b1bf9609451589d, type: 2}

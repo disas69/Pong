@@ -1,4 +1,6 @@
-﻿using Game.Input;
+﻿using System;
+using System.Collections.Generic;
+using Game.Input;
 using UnityEngine;
 
 namespace Game.Gameplay.Objects
@@ -9,6 +11,14 @@ namespace Game.Gameplay.Objects
         Bottom
     }
 
+    [Serializable]
+    public class RacketSettings
+    {
+        public RacketType Type;
+        public Material Material;
+        public RuntimeAnimatorController AnimatorController;
+    }
+
     [RequireComponent(typeof(Animator))]
     public class Racket : MonoBehaviour, IControllableObject
     {
@@ -17,11 +27,14 @@ namespace Game.Gameplay.Objects
         private readonly int _rightReactHash = Animator.StringToHash("RightReact");
 
         private Animator _animator;
+        private MeshRenderer _meshRenderer;
 
         [SerializeField] private BoxCollider _box;
-        [SerializeField] private RacketType _racketType;
         [SerializeField] private float _leftHitReactFactor = -0.25f;
         [SerializeField] private float _rightHitReactFactor = 0.25f;
+        [SerializeField] private List<RacketSettings> _racketSettings;
+
+        public RacketType Type { get; private set; }
 
         public BoxCollider Box
         {
@@ -34,14 +47,22 @@ namespace Game.Gameplay.Objects
             set { transform.position = value; }
         }
 
-        public RacketType RacketType
-        {
-            get { return _racketType; }
-        }
-
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            _meshRenderer = GetComponentInChildren<MeshRenderer>();
+        }
+
+        public void Setup(RacketType type)
+        {
+            Type = type;
+
+            var settings = _racketSettings.Find(s => s.Type == Type);
+            if (settings != null)
+            {
+                _meshRenderer.material = settings.Material;
+                _animator.runtimeAnimatorController = settings.AnimatorController;
+            }
         }
 
         public void React(float hitFactor)

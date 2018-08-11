@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: GameConfiguration
   m_EditorClassIdentifier: 
   RacketMaxSize: 5
-  RacketMinSize: 2
+  RacketMinSize: 1
   RacketSizeDecreaseValue: 0.5
   RacketSizeDecreaseRate: 10
   BallKickOffDelay: 1

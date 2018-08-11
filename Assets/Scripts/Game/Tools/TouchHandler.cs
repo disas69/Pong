@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace Game.Tools
@@ -16,12 +17,26 @@ namespace Game.Tools
 
         private void Awake()
         {
-            _tapDetector = new TapDetector(0.5f, 1f);
+            _tapDetector = new TapDetector(0.5f, 0.5f);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (!SplashScreen.isFinished)
+            {
+                return;
+            }
+
             _tapDetector.RegisterTouchDown(eventData);
+        }
+
+        public void Update()
+        {
+            var result = _tapDetector.Update();
+            if (result == TouchResult.Hold)
+            {
+                _onHoldEvent.Invoke();
+            }
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -30,10 +45,6 @@ namespace Game.Tools
             if (result == TouchResult.Tap)
             {
                 _onTapEvent.Invoke();
-            }
-            else if (result == TouchResult.Hold)
-            {
-                _onHoldEvent.Invoke();
             }
         }
     }

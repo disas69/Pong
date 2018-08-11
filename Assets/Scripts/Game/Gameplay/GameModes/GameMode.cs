@@ -1,5 +1,4 @@
-﻿using Framework.Extensions;
-using Game.Configuration;
+﻿using Game.Configuration;
 using Game.Gameplay.Objects;
 using Game.Input;
 using UnityEngine;
@@ -14,75 +13,71 @@ namespace Game.Gameplay.GameModes
 
     public abstract class GameMode : MonoBehaviour
     {
-        private Vector3 _defaultTopRacketPosition;
-        private Vector3 _defaultBottomRacketPosition;
-
-        [SerializeField] private Racket _topRacket;
-        [SerializeField] private Racket _bottomRacket;
+        [SerializeField] private Vector3 _defaultTopRacketPosition;
+        [SerializeField] private Vector3 _defaultBottomRacketPosition;
+        [SerializeField] private Transform _racketRoot;
         [SerializeField] private Transform _ballRoot;
 
         public abstract GameModeType Type { get; }
-
-        protected Racket TopRacket
+        
+        protected Transform RacketRoot
         {
-            get { return _topRacket; }
+            get { return _racketRoot; }
         }
 
-        protected Racket BottomRacket
+        protected Transform BallRoot
         {
-            get { return _bottomRacket; }
+            get { return _ballRoot; }
         }
 
         public abstract IControllableObject[] GetControllableObjects();
 
         protected virtual void Awake()
         {
-            _defaultTopRacketPosition = TopRacket.transform.position;
-            _defaultBottomRacketPosition = BottomRacket.transform.position;
         }
 
-        protected virtual void OnEnable()
+        public virtual void Initialize(BallSettings ballSettings)
         {
-        }
-
-        public virtual void Initialize(Ball ball)
-        {
-            SetupBall(ball);
-            SetupRackets();
         }
 
         protected virtual void Update()
         {
         }
 
-        protected virtual void OnDisable()
+        protected virtual void OnDestroy()
         {
         }
 
-        private void SetupBall(Ball ball)
+        protected void ClearBallRoot()
         {
-            var count = _ballRoot.childCount;
+            var count = BallRoot.childCount;
             for (int i = 0; i < count; i++)
             {
-                Destroy(_ballRoot.GetChild(i).gameObject);
+                Destroy(BallRoot.GetChild(i).gameObject);
             }
-
-            var ballInstance = Instantiate(ball, _ballRoot);
-            this.WaitForSeconds(GameConfiguration.Instance.BallKickOffDelay, () => ballInstance.KickOff());
         }
 
-        private void SetupRackets()
+        protected Vector3 GetStartPosition(RacketType type)
         {
-            TopRacket.transform.position = _defaultTopRacketPosition;
-            BottomRacket.transform.position = _defaultBottomRacketPosition;
+            if (type == RacketType.Top)
+            {
+                return _defaultTopRacketPosition;
+            }
 
-            var topRacketSize = TopRacket.Box.transform.localScale;
-            TopRacket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize, topRacketSize.y,
-                topRacketSize.z);
+            return _defaultBottomRacketPosition;
+        }
 
-            var bottomRacketSize = BottomRacket.Box.transform.localScale;
-            BottomRacket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize,
-                bottomRacketSize.y, bottomRacketSize.z);
+        protected virtual void ResetRacket(Racket racket)
+        {
+            racket.transform.SetParent(RacketRoot);
+
+            racket.transform.position = racket.Type == RacketType.Top
+                ? _defaultTopRacketPosition
+                : _defaultBottomRacketPosition;
+
+            var racketSize = racket.Box.transform.localScale;
+            racket.Box.transform.localScale = new Vector3(GameConfiguration.Instance.RacketMaxSize, racketSize.y,
+                racketSize.z);
         }
     }
 }

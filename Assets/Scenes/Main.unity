@@ -267,7 +267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &446418803
 RectTransform:
   m_ObjectHideFlags: 0
@@ -765,7 +765,7 @@ GameObject:
   - component: {fileID: 1043360161}
   - component: {fileID: 1043360159}
   m_Layer: 0
-  m_Name: Game
+  m_Name: GameController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -812,13 +812,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _navigationProvider: {fileID: 1479906809}
-  _ballsStorage: {fileID: 11400000, guid: 84579dc42ce4f4f48a8b09054d3f1236, type: 2}
+  _ballSettingsStorage: {fileID: 11400000, guid: dd272965c9cea7b4fb2d24555d1b87b2,
+    type: 2}
   GameModeSets:
   - Type: 0
     GameMode: {fileID: 114903126725994364, guid: 549d960c640eba44589de625332b65da,
       type: 2}
   - Type: 1
-    GameMode: {fileID: 114791672921256672, guid: d23025d466b1f8e4e9ebdc776730a23b,
+    GameMode: {fileID: 114425726792280688, guid: d23025d466b1f8e4e9ebdc776730a23b,
       type: 2}
 --- !u!114 &1043360161
 MonoBehaviour:
