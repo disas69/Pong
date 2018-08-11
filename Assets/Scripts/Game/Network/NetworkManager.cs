@@ -1,45 +1,48 @@
 ﻿using Game.Gameplay.GameModes;
 using Game.Network.Objects;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Game.Network
 {
     public class NetworkManager : UnityEngine.Networking.NetworkManager
     {
-        private static MultiPlayerGameMode _multiPlayerGameMode;
+        private static MultiPlayerGameMode _multiPlayer;
 
-        public MultiPlayerGameMode MultiPlayerGameMode;
+        public static bool IsHost;
+
+        [SerializeField] private MultiPlayerGameMode _multiPlayerGameMode;
 
         private void Awake()
         {
-            _multiPlayerGameMode = MultiPlayerGameMode;
+            _multiPlayer = _multiPlayerGameMode;
         }
 
         public override void OnClientDisconnect(NetworkConnection conn)
         {
             base.OnClientDisconnect(conn);
-            _multiPlayerGameMode.UnregisterPlayer();
+            _multiPlayer.UnregisterPlayer();
         }
 
         public override void OnServerDisconnect(NetworkConnection conn)
         {
             base.OnServerDisconnect(conn);
-            _multiPlayerGameMode.UnregisterPlayer();
+            _multiPlayer.UnregisterPlayer();
         }
 
         public static void RegisterRacket(NetworkRacket networkRacket)
         {
-            if (_multiPlayerGameMode != null)
+            if (_multiPlayer != null)
             {
-                _multiPlayerGameMode.RegisterRacket(networkRacket);
+                _multiPlayer.RegisterRacket(networkRacket);
             }
         }
 
         public static void RegisterBall(NetworkBall networkBall)
         {
-            if (_multiPlayerGameMode != null)
+            if (_multiPlayer != null)
             {
-                _multiPlayerGameMode.RegisterBall(networkBall);
+                _multiPlayer.RegisterBall(networkBall);
             }
         }
     }

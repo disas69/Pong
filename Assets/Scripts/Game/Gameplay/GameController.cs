@@ -56,9 +56,9 @@ namespace Game.Gameplay
 
             _playerInputHandler = GetComponent<PlayerInputHandler>();
             _gameStateMachine = CreateStateMachine();
-            NavigationProvider.OpenScreen<StartPage>();
 
             GameData.Load();
+            NavigationProvider.OpenScreen<StartPage>();
         }
 
         private StateMachine<GameState> CreateStateMachine()
@@ -70,8 +70,19 @@ namespace Game.Gameplay
             stateMachine.AddTransition(GameState.Idle, GameState.MultiPlay, ActivateMultiPlay);
             stateMachine.AddTransition(GameState.MultiPlay, GameState.GameOver, ActivateGameOver);
             stateMachine.AddTransition(GameState.GameOver, GameState.MultiPlay, ActivateMultiPlay);
+            stateMachine.AddTransition(GameState.GameOver, GameState.Idle, ActivateStartPage);
 
             return stateMachine;
+        }
+
+        private void ActivateStartPage()
+        {
+            if (_currentGameMode != null)
+            {
+                Destroy(_currentGameMode.gameObject);
+            }
+
+            NavigationProvider.OpenScreen<StartPage>();
         }
 
         public void SetGameState(GameState gameState)
@@ -93,23 +104,30 @@ namespace Game.Gameplay
 
         private void ActivateSinglePlay()
         {
+            NavigationProvider.OpenScreen<SinglePlayPage>();
             ActivateGameMode(GameModeType.SinglePlayer);
         }
 
         private void ActivateMultiPlay()
         {
+            NavigationProvider.OpenScreen<MultiPlayPage>();
             ActivateGameMode(GameModeType.MultiPlayer);
         }
 
         private void ActivateGameOver()
         {
-            NavigationProvider.OpenScreen<ReplayPage>();
+            if (GameMode == GameModeType.SinglePlayer)
+            {
+                NavigationProvider.OpenScreen<SingleReplayPage>();
+            }
+            else if (GameMode == GameModeType.MultiPlayer)
+            {
+                NavigationProvider.OpenScreen<MultiReplayPage>();
+            }
         }
 
         private void ActivateGameMode(GameModeType type)
         {
-            NavigationProvider.OpenScreen<PlayPage>();
-
             if (_currentGameMode != null)
             {
                 if (_currentGameMode.Type != type)

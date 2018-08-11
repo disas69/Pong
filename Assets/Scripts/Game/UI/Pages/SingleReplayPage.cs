@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Pages
 {
-    public class ReplayPage : Page<PageModel>
+    public class SingleReplayPage : Page<PageModel>
     {
         [SerializeField] private Text _bestScoreText;
 

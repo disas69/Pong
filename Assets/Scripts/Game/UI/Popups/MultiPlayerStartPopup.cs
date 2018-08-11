@@ -1,6 +1,5 @@
 ﻿using Framework.UI.Structure.Base.View;
 using Game.Gameplay;
-using Game.Gameplay.GameModes;
 using JetBrains.Annotations;
 
 namespace Game.UI.Popups
@@ -10,15 +9,19 @@ namespace Game.UI.Popups
         [UsedImplicitly]
         public void StartHost()
         {
-            MultiPlayerGameMode.IsHost = true;
-            GameController.Instance.SetGameState(GameState.MultiPlay);
-            Close();
+            Network.NetworkManager.IsHost = true;
+            StartMultiPlay();
         }
 
         [UsedImplicitly]
         public void StartClient()
         {
-            MultiPlayerGameMode.IsHost = false;
+            Network.NetworkManager.IsHost = false;
+            StartMultiPlay();
+        }
+
+        private void StartMultiPlay()
+        {
             GameController.Instance.SetGameState(GameState.MultiPlay);
             Close();
         }

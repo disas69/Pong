@@ -23,6 +23,8 @@ MonoBehaviour:
   - back
   - online
   - mode
+  - wait_message
+  - exit_message
   LanguagesData:
   - Language: 10
     Strings:
@@ -37,6 +39,8 @@ MonoBehaviour:
     - b a c k
     - O N L I N E
     - m o d e
+    - w a i t   f o r   r e p l a y
+    - h o l d   t o   e x i t
   - Language: 30
     Strings:
     - "\u041B \u0423 \u0427 \u0428 \u0418 \u0419   \u0421 \u0427 \u0415 \u0422  :
@@ -57,3 +61,7 @@ MonoBehaviour:
     - "\u043D \u0430 \u0437 \u0430 \u0434"
     - "\u041E \u041D \u041B \u0410 \u0419 \u041D"
     - "\u0440 \u0435 \u0436 \u0438 \u043C"
+    - "\u043E \u0436 \u0438 \u0434 \u0430 \u0439 \u0442 \u0435   \u0440 \u0435 \u0441
+      \u0442 \u0430 \u0440 \u0442 \u0430"
+    - "\u0443 \u0434 \u0435 \u0440 \u0436 \u0438 \u0432 \u0430 \u0439 \u0442 \u0435
+      \  \u0447 \u0442 \u043E \u0431 \u044B   \u0432 \u044B \u0439 \u0442 \u0438"

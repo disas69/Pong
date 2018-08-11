@@ -114,7 +114,7 @@ MonoBehaviour:
   _defaultBottomRacketPosition: {x: 0, y: -4.5, z: 0}
   _racketRoot: {fileID: 4117385973258620}
   _ballRoot: {fileID: 4789558425148392}
-  _ballPrefab: {fileID: 114374955725454226, guid: 80dabd3fb5437f34ea2cb5b04f570ace,
+  _ballPrefab: {fileID: 114355439213508404, guid: 80dabd3fb5437f34ea2cb5b04f570ace,
     type: 2}
   _hitTopBoundSignal:
     Name: HitTopBound
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_MatchHost: mm.unet.unity3d.com
   m_MatchPort: 443
   matchName: default
-  matchSize: 4
+  matchSize: 2
   isNetworkActive: 0
   matchMaker: {fileID: 0}
-  MultiPlayerGameMode: {fileID: 114425726792280688}
+  _multiPlayerGameMode: {fileID: 114425726792280688}

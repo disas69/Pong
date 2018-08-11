@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114006563287000288}
   - component: {fileID: 114824818372206754}
   m_Layer: 5
-  m_Name: PlayPage
+  m_Name: SinglePlayPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
