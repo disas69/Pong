@@ -32,3 +32,13 @@ MonoBehaviour:
     StartSpeed: 5
     BouncingSpeed: 12
     View: {fileID: 114001477088380950, guid: 4ddb0a34f4878dc4e8b541c43edd7a60, type: 2}
+  - Name: White
+    Size: {x: 0.9, y: 0.9, z: 0.9}
+    StartSpeed: 5
+    BouncingSpeed: 9
+    View: {fileID: 114115300168200832, guid: c2b8787689c4f3847a5909db14e590f1, type: 2}
+  - Name: Pink
+    Size: {x: 1.1, y: 1.1, z: 1.1}
+    StartSpeed: 5
+    BouncingSpeed: 11
+    View: {fileID: 114855783873645468, guid: c575070e4aa49c141b1b1a6fa7cd7df3, type: 2}

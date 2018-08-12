@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 198876271968159954}
   - component: {fileID: 199317634111977850}
   m_Layer: 0
-  m_Name: BlackBallHitEffect
+  m_Name: WhiteBallHitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,14 +101,14 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 258480631
+  randomSeed: -1667155697
   InitialModule:
     serializedVersion: 3
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0.25
+      minMaxState: 3
+      scalar: 1
       minScalar: 0.5
       maxCurve:
         serializedVersion: 2
@@ -149,8 +149,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 15
-      minScalar: 10
+      scalar: 8
+      minScalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -191,7 +191,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.6838235, g: 0.6838235, b: 0.6838235, a: 1}
+      maxColor: {r: 0.94509804, g: 0.9490196, b: 0.9647059, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -3462,8 +3462,8 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 130690eafb04ded4c95a61239edfa5e2, type: 2}
-  - {fileID: 2100000, guid: b9cccd415eaa5b447baecb60e668b369, type: 2}
+  - {fileID: 2100000, guid: 2e25516d350db2442a654d835162817b, type: 2}
+  - {fileID: 2100000, guid: d2c9613eb90568a47b9aec90769b035c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
