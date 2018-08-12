@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Framework.Extensions;
 using Framework.Signals;
 using Game.Configuration;
@@ -10,18 +11,17 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 using UnityEngine.Networking.NetworkSystem;
+using NetworkManager = Game.Network.NetworkManager;
 
 namespace Game.Gameplay.GameModes
 {
-    [RequireComponent(typeof(Network.NetworkManager))]
+    [RequireComponent(typeof(NetworkManager))]
     public class MultiPlayerGameMode : GameMode
     {
-        private static Racket _racket;
-        private static int _connectedPlayers;
-
-        private Network.NetworkManager _networkManager;
+        private NetworkManager _networkManager;
         private NetworkClient _networkClient;
         private string _ballSettingsName;
+        private Racket _racket;
 
         [SerializeField] private NetworkBall _ballPrefab;
         [SerializeField] private Signal _hitTopBoundSignal;
@@ -46,8 +46,7 @@ namespace Game.Gameplay.GameModes
         {
             base.Awake();
 
-            _connectedPlayers = 0;
-            _networkManager = GetComponent<Network.NetworkManager>();
+            _networkManager = GetComponent<NetworkManager>();
             _networkManager.StartMatch(OnMatchCreate, OnMatchList);
 
             SignalsManager.Register(_hitTopBoundSignal.Name, OnHitBoundsAction);
@@ -126,11 +125,11 @@ namespace Game.Gameplay.GameModes
 
             ClearBallRoot();
 
-            if (Network.NetworkManager.IsHost)
+            if (NetworkManager.IsHost)
             {
                 _ballSettingsName = ballSettings.Name;
 
-                this.WaitUntil(() => _connectedPlayers == 2, () =>
+                this.WaitUntil(() => NetworkManager.IsReady, () =>
                 {
                     NetworkServer.SendToAll(NetworkMessages.BallSettingsMessage, new StringMessage(ballSettings.Name));
                     NetworkServer.SendToAll(NetworkMessages.StartGameMessage, new EmptyMessage());
@@ -144,21 +143,21 @@ namespace Game.Gameplay.GameModes
             networkBall.transform.SetParent(BallRoot);
             networkBall.Setup(_ballSettingsName);
 
-            if (Network.NetworkManager.IsHost)
+            if (NetworkManager.IsHost)
             {
                 this.WaitForSeconds(GameConfiguration.Instance.BallKickOffDelay, () => networkBall.Object.KickOff());
             }
         }
 
-        public void RegisterRacket(NetworkRacket networkRacket)
+        public void RegisterRacket(NetworkRacket networkRacket, Action onRegisterdCallbak)
         {
             networkRacket.gameObject.SetActive(false);
-            this.WaitForSeconds(1f, () => RegisterPlayer(networkRacket));
+            this.WaitForSeconds(1f, () => RegisterPlayer(networkRacket, onRegisterdCallbak));
         }
 
-        private void RegisterPlayer(NetworkRacket networkRacket)
+        private void RegisterPlayer(NetworkRacket networkRacket, Action onRegisterdCallbak)
         {
-            if (Network.NetworkManager.IsHost)
+            if (NetworkManager.IsHost)
             {
                 if (networkRacket.isLocalPlayer)
                 {
@@ -185,14 +184,8 @@ namespace Game.Gameplay.GameModes
 
             ResetRacket(networkRacket.Object);
             networkRacket.gameObject.SetActive(true);
-            //networkRacket.SetReady(true, networkRacket.Object.Position);
 
-            _connectedPlayers++;
-        }
-
-        public void UnregisterPlayer()
-        {
-            _connectedPlayers--;
+            onRegisterdCallbak.SafeInvoke();
         }
 
         private void OnHitBoundsAction()

@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 
 namespace Game.Network.Objects
 {
+    //TODO: Find a better solution for NetworkRacket position synchronization
     public class NetworkRacket : NetworkBehaviour
     {
         /*
@@ -13,7 +14,7 @@ namespace Game.Network.Objects
 
         [SyncVar] private Vector3 _syncPosition;
         
-        [SerializeField] private float _lerpTime = 1;
+        [SerializeField] private float _lerpTime = 0.15f;
         [SerializeField] private float _threshold = 0f;
         */
 
@@ -25,15 +26,14 @@ namespace Game.Network.Objects
 
             if (Object == null)
             {
-                Debug.LogError(string.Format("NetworkObject<{0}> can be attached only to MonoBehaviour of that type",
-                    typeof(Racket).Name));
+                Debug.LogError(string.Format("NetworkObject<{0}> can be attached only to MonoBehaviour of that type", typeof(Racket).Name));
             }
         }
 
         public override void OnStartClient()
         {
             base.OnStartClient();
-            NetworkManager.RegisterRacket(this);
+            NetworkManager.RegisterPlayer(this);
         }
 
         /*
@@ -88,5 +88,10 @@ namespace Game.Network.Objects
             _currentLerpTime = 0f;
         }
         */
+
+        private void OnDestroy()
+        {
+            NetworkManager.UnregisterPlayer();
+        }
     }
 }

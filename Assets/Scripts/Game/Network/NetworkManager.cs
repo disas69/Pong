@@ -2,7 +2,6 @@
 using Game.Gameplay.GameModes;
 using Game.Network.Objects;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 using UnityEngine.Networking.Types;
 
@@ -10,18 +9,25 @@ namespace Game.Network
 {
     public class NetworkManager : UnityEngine.Networking.NetworkManager
     {
-        private static MultiPlayerGameMode _multiPlayer;
-
-        public static bool IsHost;
+        private static MultiPlayerGameMode _multiPlayerGameModeInstance;
+        private static int _connectedPlayers;
 
         [SerializeField] private MultiPlayerGameMode _multiPlayerGameMode;
 
-        private void Awake()
+        public static bool IsHost { get; set; }
+
+        public static bool IsReady
         {
-            _multiPlayer = _multiPlayerGameMode;
+            get { return _connectedPlayers == 2; }
         }
 
-        public void StartMatch(NetworkMatch.DataResponseDelegate<MatchInfo> onMatchCreateCallback, NetworkMatch.DataResponseDelegate<List<MatchInfoSnapshot>> onMatchListCallback)
+        private void Awake()
+        {
+            _multiPlayerGameModeInstance = _multiPlayerGameMode;
+        }
+
+        public void StartMatch(NetworkMatch.DataResponseDelegate<MatchInfo> onMatchCreateCallback,
+            NetworkMatch.DataResponseDelegate<List<MatchInfoSnapshot>> onMatchListCallback)
         {
             StartMatchMaker();
 
@@ -52,37 +58,29 @@ namespace Game.Network
             }
         }
 
-        public override void OnClientDisconnect(NetworkConnection conn)
+        public static void RegisterPlayer(NetworkRacket networkRacket)
         {
-            base.OnClientDisconnect(conn);
-            if (_multiPlayer != null)
+            if (_multiPlayerGameModeInstance != null)
             {
-                _multiPlayer.UnregisterPlayer();
-            }
-        }
-
-        public override void OnServerDisconnect(NetworkConnection conn)
-        {
-            base.OnServerDisconnect(conn);
-            if (_multiPlayer != null)
-            {
-                _multiPlayer.UnregisterPlayer();
-            }
-        }
-
-        public static void RegisterRacket(NetworkRacket networkRacket)
-        {
-            if (_multiPlayer != null)
-            {
-                _multiPlayer.RegisterRacket(networkRacket);
+                _multiPlayerGameModeInstance.RegisterRacket(networkRacket, () => _connectedPlayers++);
             }
         }
 
         public static void RegisterBall(NetworkBall networkBall)
         {
-            if (_multiPlayer != null)
+            if (_multiPlayerGameModeInstance != null)
             {
-                _multiPlayer.RegisterBall(networkBall);
+                _multiPlayerGameModeInstance.RegisterBall(networkBall);
+            }
+        }
+
+        public static void UnregisterPlayer()
+        {
+            _connectedPlayers--;
+
+            if (_connectedPlayers < 0)
+            {
+                _connectedPlayers = 0;
             }
         }
     }

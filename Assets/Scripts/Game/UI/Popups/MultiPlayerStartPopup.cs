@@ -18,7 +18,7 @@ namespace Game.UI.Popups
             }
             else
             {
-                LogError("No internet connection!");
+                LogError("Failed to Start Host. No internet connection!");
             }
         }
 
@@ -32,7 +32,7 @@ namespace Game.UI.Popups
             }
             else
             {
-                LogError("No internet connection!");
+                LogError("Failed to Start Client. No internet connection!");
             }
         }
 
