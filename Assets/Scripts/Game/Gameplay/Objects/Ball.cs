@@ -1,8 +1,10 @@
-﻿using Framework.Extensions;
+﻿using System;
+using Framework.Extensions;
 using Framework.Signals;
 using Framework.Tools.Gameplay;
 using Game.Configuration;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.Gameplay.Objects
 {
@@ -19,6 +21,9 @@ namespace Game.Gameplay.Objects
         private Pool<ParticleSystem> _effectsPool;
         private float _startSpeed;
         private float _bouncingSpeed;
+        private bool _destroyEffectPlayed;
+
+        public event Action Destroyed;
 
         [SerializeField] private int _effectsPoolCapacity;
         [SerializeField] private Signal _playAudioSignal;
@@ -46,6 +51,16 @@ namespace Game.Gameplay.Objects
             _rigidbody.velocity = StartVectors[Random.Range(0, StartVectors.Length)] * _startSpeed;
         }
 
+        public void PlayDestroyEffect(Vector3 hitPoint)
+        {
+            if (!_destroyEffectPlayed)
+            {
+                Instantiate(_ballView.DestroyEffect, hitPoint, Quaternion.identity, transform.parent);
+                SignalsManager.Broadcast(_playAudioSignal.Name, "ball_destroy");
+                _destroyEffectPlayed = true;
+            }
+        }
+
         private void OnCollisionEnter(Collision otherCollision)
         {
             var hitPoint = otherCollision.contacts[0].point;
@@ -53,8 +68,7 @@ namespace Game.Gameplay.Objects
             var racket = otherCollision.gameObject.GetComponentInParent<Racket>();
             if (racket != null)
             {
-                var hitFactor = CalculateHitFactor(transform.position, otherCollision.transform.position,
-                    otherCollision.collider.bounds.size.x);
+                var hitFactor = CalculateHitFactor(transform.position, otherCollision.transform.position, otherCollision.collider.bounds.size.x);
                 racket.React(hitFactor);
 
                 if (racket.Type == RacketType.Top)
@@ -115,16 +129,15 @@ namespace Game.Gameplay.Objects
             this.WaitForSeconds(hitEffect.main.duration, () => _effectsPool.Return(hitEffect));
             SignalsManager.Broadcast(_playAudioSignal.Name, "ball_hit");
         }
-
-        private void PlayDestroyEffect(Vector3 hitPoint)
-        {
-            Instantiate(_ballView.DestroyEffect, hitPoint, Quaternion.identity, transform.parent);
-            SignalsManager.Broadcast(_playAudioSignal.Name, "ball_destroy");
-        }
-
+        
         private static float CalculateHitFactor(Vector2 ballPosition, Vector2 platePosition, float plateHeight)
         {
             return (ballPosition.x - platePosition.x) / plateHeight;
+        }
+
+        private void OnDestroy()
+        {
+            Destroyed.SafeInvoke();
         }
     }
 }

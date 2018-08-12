@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 95755542286768528}
   - component: {fileID: 114065387604159942}
   - component: {fileID: 114394027549487770}
-  - component: {fileID: 114388093439344010}
+  - component: {fileID: 114203235035560954}
   m_Layer: 0
   m_Name: NetworkRacket
   m_TagString: Untagged
@@ -158,6 +158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfaa8d88db424be7a430f8e08c525280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lerpTime: 0.1
+  _threshold: 0
 --- !u!114 &114065387604159942
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -190,7 +192,7 @@ MonoBehaviour:
     i15: 173
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &114388093439344010
+--- !u!114 &114203235035560954
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -203,7 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 1
   m_SendInterval: 0.033333335
-  m_SyncRotationAxis: 7
+  m_SyncRotationAxis: 0
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
   m_MovementTheshold: 0.001

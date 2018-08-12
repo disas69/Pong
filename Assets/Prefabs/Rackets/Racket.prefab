@@ -155,7 +155,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _box: {fileID: 65651241531772384}
-  _racketType: 0
   _leftHitReactFactor: -0.2
   _rightHitReactFactor: 0.2
   _racketSettings:

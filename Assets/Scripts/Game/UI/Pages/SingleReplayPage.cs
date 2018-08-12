@@ -29,7 +29,7 @@ namespace Game.UI.Pages
         [UsedImplicitly]
         public void OpenMultiPlayerStartPopup()
         {
-            GameController.Instance.NavigationProvider.ShowPopup<MultiPlayerStartPopup>();
+            GameController.Instance.ShowPopup<MultiPlayerStartPopup>();
         }
     }
 }

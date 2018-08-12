@@ -4,6 +4,7 @@ using Framework.Extensions;
 using Framework.Tools.Gameplay;
 using Framework.Tools.Singleton;
 using Framework.UI;
+using Framework.UI.Structure.Base.View;
 using Game.Configuration;
 using Game.Data;
 using Game.Gameplay.GameModes;
@@ -45,11 +46,6 @@ namespace Game.Gameplay
             get { return _currentGameMode.Type; }
         }
 
-        public NavigationProvider NavigationProvider
-        {
-            get { return _navigationProvider; }
-        }
-
         protected override void Awake()
         {
             base.Awake();
@@ -58,7 +54,7 @@ namespace Game.Gameplay
             _gameStateMachine = CreateStateMachine();
 
             GameData.Load();
-            NavigationProvider.OpenScreen<StartPage>();
+            _navigationProvider.OpenScreen<StartPage>();
         }
 
         private StateMachine<GameState> CreateStateMachine()
@@ -71,6 +67,8 @@ namespace Game.Gameplay
             stateMachine.AddTransition(GameState.MultiPlay, GameState.GameOver, ActivateGameOver);
             stateMachine.AddTransition(GameState.GameOver, GameState.MultiPlay, ActivateMultiPlay);
             stateMachine.AddTransition(GameState.GameOver, GameState.Idle, ActivateStartPage);
+            stateMachine.AddTransition(GameState.SinglePlay, GameState.Idle, ActivateStartPage);
+            stateMachine.AddTransition(GameState.MultiPlay, GameState.Idle, ActivateStartPage);
 
             return stateMachine;
         }
@@ -79,10 +77,10 @@ namespace Game.Gameplay
         {
             if (_currentGameMode != null)
             {
-                Destroy(_currentGameMode.gameObject);
+                DeactivateGameMode(_currentGameMode);
             }
 
-            NavigationProvider.OpenScreen<StartPage>();
+            _navigationProvider.OpenScreen<StartPage>();
         }
 
         public void SetGameState(GameState gameState)
@@ -102,15 +100,20 @@ namespace Game.Gameplay
             }
         }
 
+        public void ShowPopup<T>() where T : Popup
+        {
+            _navigationProvider.ShowPopup<T>();
+        }
+
         private void ActivateSinglePlay()
         {
-            NavigationProvider.OpenScreen<SinglePlayPage>();
+            _navigationProvider.OpenScreen<SinglePlayPage>();
             ActivateGameMode(GameModeType.SinglePlayer);
         }
 
         private void ActivateMultiPlay()
         {
-            NavigationProvider.OpenScreen<MultiPlayPage>();
+            _navigationProvider.OpenScreen<MultiPlayPage>();
             ActivateGameMode(GameModeType.MultiPlayer);
         }
 
@@ -118,11 +121,11 @@ namespace Game.Gameplay
         {
             if (GameMode == GameModeType.SinglePlayer)
             {
-                NavigationProvider.OpenScreen<SingleReplayPage>();
+                _navigationProvider.OpenScreen<SingleReplayPage>();
             }
             else if (GameMode == GameModeType.MultiPlayer)
             {
-                NavigationProvider.OpenScreen<MultiReplayPage>();
+                _navigationProvider.OpenScreen<MultiReplayPage>();
             }
         }
 
@@ -132,7 +135,9 @@ namespace Game.Gameplay
             {
                 if (_currentGameMode.Type != type)
                 {
-                    Destroy(_currentGameMode.gameObject);
+                    var gameModeToDeactivate = _currentGameMode;
+                    DeactivateGameMode(gameModeToDeactivate);
+
                     _currentGameMode = GetGameMode(type);
                 }
             }
@@ -146,10 +151,8 @@ namespace Game.Gameplay
             var controllableObjects = _currentGameMode.GetControllableObjects();
             if (controllableObjects == null)
             {
-                this.WaitUntil(() => (controllableObjects = _currentGameMode.GetControllableObjects()) != null, () =>
-                {
-                    _playerInputHandler.Initialize(controllableObjects);
-                });
+                this.WaitUntil(() => (controllableObjects = _currentGameMode.GetControllableObjects()) != null,
+                    () => { _playerInputHandler.Initialize(controllableObjects); });
             }
             else
             {
@@ -167,6 +170,12 @@ namespace Game.Gameplay
 
             Debug.LogError(string.Format("Failed to find appropriate game mode: {0}", type));
             return null;
+        }
+
+        private void DeactivateGameMode(GameMode gameMode)
+        {
+            gameMode.Deactivate();
+            this.WaitUntil(() => gameMode.Deactivated, () => { Destroy(gameMode.gameObject); });
         }
 
         private void OnDestroy()

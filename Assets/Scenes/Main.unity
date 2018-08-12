@@ -480,6 +480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f2e2a3c1b73b5b42abc32aa0d956a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _changeOnStart: 1
   _lerpTime: 1
   _colors:
   - {r: 0.039215688, g: 0.23921569, b: 0.38431373, a: 1}
@@ -487,6 +488,7 @@ MonoBehaviour:
   - {r: 0.02745098, g: 0.6, b: 0.57254905, a: 1}
   - {r: 0.23529412, g: 0.3882353, b: 0.50980395, a: 1}
   - {r: 0.7176471, g: 0.08235294, b: 0.2509804, a: 1}
+  - {r: 0.20392157, g: 0.28627452, b: 0.36862746, a: 1}
 --- !u!114 &608012032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,6 +765,7 @@ GameObject:
   - component: {fileID: 1043360158}
   - component: {fileID: 1043360160}
   - component: {fileID: 1043360161}
+  - component: {fileID: 1043360162}
   - component: {fileID: 1043360159}
   m_Layer: 0
   m_Name: GameController
@@ -838,6 +841,19 @@ MonoBehaviour:
   _maxReleaseSpeed: 20
   _slideDecelerationFactor: 1.5
   _slideStopThreshold: 1
+--- !u!114 &1043360162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1043360157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6777e59b83cef0c439de8fcff4dae2f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _host: 8.8.8.8
+  _pingTimeout: 5
 --- !u!1 &1479906804
 GameObject:
   m_ObjectHideFlags: 0

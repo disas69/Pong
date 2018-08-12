@@ -19,7 +19,8 @@ namespace Game.Gameplay.GameModes
         [SerializeField] private Transform _ballRoot;
 
         public abstract GameModeType Type { get; }
-        
+        public bool Deactivated { get; protected set; }
+
         protected Transform RacketRoot
         {
             get { return _racketRoot; }
@@ -44,6 +45,11 @@ namespace Game.Gameplay.GameModes
         {
         }
 
+        public virtual void Deactivate()
+        {
+            Deactivated = true;
+        }
+
         protected virtual void OnDestroy()
         {
         }
@@ -55,16 +61,6 @@ namespace Game.Gameplay.GameModes
             {
                 Destroy(BallRoot.GetChild(i).gameObject);
             }
-        }
-
-        protected Vector3 GetStartPosition(RacketType type)
-        {
-            if (type == RacketType.Top)
-            {
-                return _defaultTopRacketPosition;
-            }
-
-            return _defaultBottomRacketPosition;
         }
 
         protected virtual void ResetRacket(Racket racket)

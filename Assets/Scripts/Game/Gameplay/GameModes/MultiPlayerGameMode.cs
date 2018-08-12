@@ -39,28 +39,19 @@ namespace Game.Gameplay.GameModes
                 return null;
             }
 
-            return new IControllableObject[] { _racket };
+            return new IControllableObject[] {_racket};
         }
 
         protected override void Awake()
         {
             base.Awake();
 
-            SignalsManager.Register(_hitTopBoundSignal.Name, OnHitBoundsAction);
-            SignalsManager.Register(_hitBottomBoundSignal.Name, OnHitBoundsAction);
-
             _connectedPlayers = 0;
             _networkManager = GetComponent<Network.NetworkManager>();
-            _networkManager.StartMatchMaker();
+            _networkManager.StartMatch(OnMatchCreate, OnMatchList);
 
-            if (Network.NetworkManager.IsHost)
-            {
-                _networkManager.matchMaker.CreateMatch(string.Format("game_{0}", Random.Range(0, 100)), 2, true, "", "", "", 0, 0, OnMatchCreate);
-            }
-            else
-            {
-                _networkManager.matchMaker.ListMatches(0, 10, "", true, 0, 0, OnMatchList);
-            }
+            SignalsManager.Register(_hitTopBoundSignal.Name, OnHitBoundsAction);
+            SignalsManager.Register(_hitBottomBoundSignal.Name, OnHitBoundsAction);
         }
 
         private void OnMatchCreate(bool success, string extendedinfo, MatchInfo responsedata)
@@ -70,6 +61,10 @@ namespace Game.Gameplay.GameModes
                 _networkClient = _networkManager.StartHost(responsedata);
                 RegisterMessageHandlers(_networkClient);
             }
+            else
+            {
+                LogErrorAndQuit("Failed to create a match");
+            }
         }
 
         private void OnMatchList(bool success, string extendedinfo, List<MatchInfoSnapshot> responsedata)
@@ -78,9 +73,16 @@ namespace Game.Gameplay.GameModes
             {
                 if (responsedata.Count > 0)
                 {
-                    var matchInfo = responsedata[0];
-                    _networkManager.matchMaker.JoinMatch(matchInfo.networkId, "", "", "", 0, 0, OnJoinedMatch);
+                    _networkManager.JoinMatch(responsedata[0].networkId, OnJoinedMatch);
                 }
+                else
+                {
+                    LogErrorAndQuit("Failed to find available matches");
+                }
+            }
+            else
+            {
+                LogErrorAndQuit("Failed to get available matches list");
             }
         }
 
@@ -91,14 +93,16 @@ namespace Game.Gameplay.GameModes
                 _networkClient = _networkManager.StartClient(responsedata);
                 RegisterMessageHandlers(_networkClient);
             }
+            else
+            {
+                LogErrorAndQuit("Failed to join the match");
+            }
         }
 
         private void RegisterMessageHandlers(NetworkClient networkClient)
         {
-            networkClient.RegisterHandler(NetworkMessages.GameOverMessage, msg =>
-            {
-                GameController.Instance.SetGameState(GameState.GameOver);
-            });
+            networkClient.RegisterHandler(NetworkMessages.GameOverMessage,
+                msg => { GameController.Instance.SetGameState(GameState.GameOver); });
 
             networkClient.RegisterHandler(NetworkMessages.BallSettingsMessage, msg =>
             {
@@ -122,10 +126,10 @@ namespace Game.Gameplay.GameModes
 
             ClearBallRoot();
 
-            _ballSettingsName = ballSettings.Name;
-
             if (Network.NetworkManager.IsHost)
             {
+                _ballSettingsName = ballSettings.Name;
+
                 this.WaitUntil(() => _connectedPlayers == 2, () =>
                 {
                     NetworkServer.SendToAll(NetworkMessages.BallSettingsMessage, new StringMessage(ballSettings.Name));
@@ -180,7 +184,8 @@ namespace Game.Gameplay.GameModes
             }
 
             ResetRacket(networkRacket.Object);
-            networkRacket.Object.gameObject.SetActive(true);
+            networkRacket.gameObject.SetActive(true);
+            //networkRacket.SetReady(true, networkRacket.Object.Position);
 
             _connectedPlayers++;
         }
@@ -195,18 +200,28 @@ namespace Game.Gameplay.GameModes
             NetworkServer.SendToAll(NetworkMessages.GameOverMessage, new EmptyMessage());
         }
 
-        protected override void OnDestroy()
+        private void LogErrorAndQuit(string errorMessage)
         {
-            base.OnDestroy();
+            Debug.Log(string.Format("Network error: {0}", errorMessage));
+            GameController.Instance.SetGameState(GameState.Idle);
+        }
 
-            if (Network.NetworkManager.IsHost)
+        public override void Deactivate()
+        {
+            if (_networkManager.isNetworkActive)
             {
-                _networkManager.StopHost();
+                _networkManager.Disconnect();
+                this.WaitUntil(() => !_networkManager.isNetworkActive, () => Deactivated = true);
             }
             else
             {
-                _networkManager.StopClient();
+                Deactivated = true;
             }
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
 
             SignalsManager.Unregister(_hitTopBoundSignal.Name, OnHitBoundsAction);
             SignalsManager.Unregister(_hitBottomBoundSignal.Name, OnHitBoundsAction);

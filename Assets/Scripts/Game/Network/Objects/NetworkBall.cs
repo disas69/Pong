@@ -17,9 +17,11 @@ namespace Game.Network.Objects
 
             if (Object == null)
             {
-                Debug.LogError(string.Format("NetworkObject<{0}> can be attached only to MonoBehaviour of that type",
-                    typeof(Ball).Name));
+                Debug.LogError(string.Format("NetworkObject<{0}> can be attached only to MonoBehaviour of that type", typeof(Ball).Name));
+                return;
             }
+
+            Object.Destroyed += CmdOnBallDestroyed;
         }
 
         public void Setup(string settingsName)
@@ -32,6 +34,20 @@ namespace Game.Network.Objects
         {
             base.OnStartClient();
             NetworkManager.RegisterBall(this);
+        }
+
+        [Command]
+        private void CmdOnBallDestroyed()
+        {
+            if (!isLocalPlayer)
+            {
+                Object.PlayDestroyEffect(Object.transform.position);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Object.Destroyed -= CmdOnBallDestroyed;
         }
     }
 }

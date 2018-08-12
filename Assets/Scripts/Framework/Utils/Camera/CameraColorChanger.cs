@@ -14,6 +14,7 @@ namespace Framework.Utils.Camera
         private Color _nextColor;
         private Coroutine _lerpCoroutine;
 
+        [SerializeField] private bool _changeOnStart;
         [SerializeField] private float _lerpTime;
         [SerializeField] private List<Color> _colors;
 
@@ -21,6 +22,11 @@ namespace Framework.Utils.Camera
         {
             _camera = GetComponent<UnityEngine.Camera>();
             _currentIndex = 0;
+
+            if (_changeOnStart)
+            {
+                ChangeColor();
+            }
         }
 
         public void ChangeColor()
